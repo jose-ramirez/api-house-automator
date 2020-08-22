@@ -1,5 +1,5 @@
 import chaiHttp from 'chai-http';
-import { use, should as _should, request } from 'chai';
+import { use, should as _should, expect, request } from 'chai';
 import { it, describe, beforeEach, afterEach } from 'mocha';
 
 use(chaiHttp);
@@ -30,6 +30,14 @@ describe('POST /api/user/v2/register', () => {
             .end((err, res) => {
                 should.not.exist(err);
                 res.should.have.status(200);
+
+                expect(res.body).to.haveOwnProperty('jwt');
+                expect(res.body).to.haveOwnProperty('user');
+
+                should.exist(res.body.user);
+                expect(res.body.user).to.haveOwnProperty('email');
+                expect(res.body.user).to.haveOwnProperty('isActivated');
+                expect(res.body.user).to.haveOwnProperty('apikey');
                 done();
             });
     });
