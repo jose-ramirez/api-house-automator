@@ -10,23 +10,19 @@ import { User } from '../src/db';
 
 const should = _should();
 
-describe('POST /api/user/login', () => {
+describe('POST /api/user/v2/register', () => {
 
     beforeEach(async () => {
         await User.deleteMany({});
-        await User.create({
-            email: 'some.valid@email.com',
-            password: 'my_password!'
-        });
     });
 
     afterEach(async () => {
         await User.deleteMany({});
     });
 
-    it('should login user and return token', done => {
+    it('should register user and return token', done => {
         request(app)
-            .post('/api/user/login')
+            .post('/api/user/v2/register')
             .send({
                 email: 'some.valid@email.com',
                 password: 'my_password!'
@@ -48,28 +44,26 @@ describe('POST /api/user/login', () => {
 
     it('should not return user if email is missing', done => {
         request(app)
-            .post('/api/user/login')
+            .post('/api/user/v2/register')
             .send({
                 password: 'my_password!'
             })
             .end((err, res) => {
                 should.not.exist(err);
-                res.should.have.status(200);
-                expect(res.body).to.haveOwnProperty('error');
+                res.should.have.status(400);
                 done();
             });
     });
 
     it('should not return user if password is missing', done => {
         request(app)
-            .post('/api/user/login')
+            .post('/api/user/v2/register')
             .send({
                 email: 'some.valid@email.com'
             })
             .end((err, res) => {
                 should.not.exist(err);
-                res.should.have.status(200);
-                expect(res.body).to.haveOwnProperty('error');
+                res.should.have.status(400);
                 done();
             });
     });
